@@ -31,6 +31,13 @@ void state_oprel_1();
 void state_oprel_2();
 void state_oprel_3();
 void state_oprel_4();
+void state_nb_0();
+void state_nb_1();
+void state_nb_2();
+void state_nb_3();
+void state_nb_4();
+void state_nb_5();
+void state_nb_6();
 /************SI*************/
 void state_si_0() {
     temp = strdup(word);
@@ -263,6 +270,86 @@ void state_oprel_4() {
         success(3);
     else
         not_mine_error();
+}
+
+/************NB (chiffre+(.chiffre+)?(E(+|-)?chiffre+)?) DFAM*************/
+void state_nb_0() {
+    temp = strdup(word);
+    char c = getstrchar(&temp);
+    if (c >= '0' && c <= '9') {
+        state_nb_1();
+    } else {
+        not_mine_error();
+    }
+}
+// Integer part acceptor: digits+, optional '.' or 'E', or end
+void state_nb_1() {
+    char c = getstrchar(&temp);
+    if (c >= '0' && c <= '9') {
+        state_nb_1();
+    } else if (c == '.') {
+        state_nb_2();
+    } else if (c == 'E') {
+        state_nb_3();
+    } else if (c == '\0') {
+        success(5);
+    } else {
+        not_mine_error();
+    }
+}
+// After '.', require at least one digit
+void state_nb_2() {
+    char c = getstrchar(&temp);
+    if (c >= '0' && c <= '9') {
+        state_nb_4();
+    } else {
+        not_mine_error();
+    }
+}
+// Fractional part acceptor: digits+, optional 'E', or end
+void state_nb_4() {
+    char c = getstrchar(&temp);
+    if (c >= '0' && c <= '9') {
+        state_nb_4();
+    } else if (c == 'E') {
+        state_nb_3();
+    } else if (c == '\0') {
+        success(5);
+    } else {
+        not_mine_error();
+    }
+}
+// After 'E': optional sign or require at least one digit
+void state_nb_3() {
+    char c = getstrchar(&temp);
+    if (c == '+' || c == '-') {
+        // require at least one digit next
+        state_nb_6();
+    } else if (c >= '0' && c <= '9') {
+        state_nb_5();
+    } else {
+        not_mine_error();
+    }
+}
+// After sign: require first exponent digit
+void state_nb_6() {
+    char c = getstrchar(&temp);
+    if (c >= '0' && c <= '9') {
+        state_nb_5();
+    } else {
+        not_mine_error();
+    }
+}
+// Exponent digits acceptor: digits+, then end
+void state_nb_5() {
+    char c = getstrchar(&temp);
+    if (c >= '0' && c <= '9') {
+        state_nb_5();
+    } else if (c == '\0') {
+        success(5);
+    } else {
+        not_mine_error();
+    }
 }
 
 #endif //OUR_LEX_STATES_H

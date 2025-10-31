@@ -40,6 +40,11 @@ void success(int nb_automate) {
             printf("\nID");
             start = 0;
             break;
+        case 5:
+            write_to_file("nb\n");
+            printf("\nNB");
+            start = 0;
+            break;
         default:
     }
 }
@@ -70,9 +75,9 @@ void analyser() {
         case 4:
             state_id_0();
             break;
-        // case 5:
-        //     // state_nb_0();
-        //     break;
+        case 5:
+            state_nb_0();
+            break;
         default:
             lexical_error();
     }
