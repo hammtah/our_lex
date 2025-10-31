@@ -17,7 +17,13 @@ void success(int nb_automate) {
     switch (nb_automate) {
         case 0:
             write_to_file("si\n");
-            printf("SI");
+            printf("\nSI");
+            start = 0;
+            break;
+        case 4:
+            write_to_file("id\n");
+            printf("\nID");
+            start = 0;
             break;
         default:
     }
@@ -46,9 +52,9 @@ void analyser() {
         // case 3:
         //     // state_oprel_0();
         //     break;
-        // case 4:
-        //     // state_id_0();
-        //     break;
+        case 1:
+            state_id_0();
+            break;
         // case 5:
         //     // state_nb_0();
         //     break;
