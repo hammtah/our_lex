@@ -30,6 +30,11 @@ void success(int nb_automate) {
             printf("\nSINON");
             start = 0;
             break;
+        case 3:
+            write_to_file("oprel\n");
+            printf("\nOPREL");
+            start = 0;
+            break;
         case 4:
             write_to_file("id\n");
             printf("\nID");
@@ -59,9 +64,9 @@ void analyser() {
         case 2:
             state_sinon_0();
             break;
-        // case 3:
-        //     // state_oprel_0();
-        //     break;
+        case 3:
+            state_oprel_0();
+            break;
         case 4:
             state_id_0();
             break;

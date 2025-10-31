@@ -26,6 +26,11 @@ void state_sinon_2();
 void state_sinon_3();
 void state_sinon_4();
 void state_sinon_5();
+void state_oprel_0();
+void state_oprel_1();
+void state_oprel_2();
+void state_oprel_3();
+void state_oprel_4();
 /************SI*************/
 void state_si_0() {
     temp = strdup(word);
@@ -35,7 +40,6 @@ void state_si_0() {
             state_si_1();
             break;
         default:
-            //La chaine entré ne correspond pas à cet automate(l'automate de si)
             not_mine_error();
     }
 }
@@ -195,6 +199,68 @@ void state_sinon_4() {
 void state_sinon_5() {
     if (getstrchar(&temp) == '\0')
         success(2);
+    else
+        not_mine_error();
+}
+
+/************OPREL (< | <= | = | <> | > | >=) DFAM*************/
+void state_oprel_0() {
+    temp = strdup(word);
+    char c = getstrchar(&temp);
+    switch (c) {
+        case '<':
+            state_oprel_1();
+            break;
+        case '>':
+            state_oprel_2();
+            break;
+        case '=':
+            state_oprel_3();
+            break;
+        default:
+            not_mine_error();
+    }
+}
+// After reading '<': accept '<' alone, or consume '='/'>' for '<=' / '<>'
+void state_oprel_1() {
+    char c = getstrchar(&temp);
+    switch (c) {
+        case '=': // '<='
+        case '>': // '<>'
+            state_oprel_4();
+            break;
+        case '\0': // '<'
+            success(3);
+            break;
+        default:
+            not_mine_error();
+    }
+}
+// After reading '>': accept '>' alone, or consume '=' for '>='
+void state_oprel_2() {
+    char c = getstrchar(&temp);
+    switch (c) {
+        case '=': // '>='
+            state_oprel_4();
+            break;
+        case '\0': // '>'
+            success(3);
+            break;
+        default:
+            not_mine_error();
+    }
+}
+// '=' is a complete operator by itself
+void state_oprel_3() {
+    if (getstrchar(&temp) == '\0')
+        success(3);
+    else
+        not_mine_error();
+}
+// Final acceptor for two-character operators: '<=', '<>', '>='
+void state_oprel_4() {
+    if (getstrchar(&temp) == '\0')
+        success(3);
     else
         not_mine_error();
 }
