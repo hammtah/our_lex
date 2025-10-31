@@ -20,6 +20,11 @@ void success(int nb_automate) {
             printf("\nSI");
             start = 0;
             break;
+        case 1:
+            write_to_file("alors\n");
+            printf("\nALORS");
+            start = 0;
+            break;
         case 4:
             write_to_file("id\n");
             printf("\nID");
@@ -43,16 +48,16 @@ void analyser() {
         case 0:
             state_si_0();
             break;
-        // case 1:
-        //     // state_alors_0();
-        //     break;
+        case 1:
+            state_alors_0();
+            break;
         // case 2:
         //     // state_sinon_0();
         //     break;
         // case 3:
         //     // state_oprel_0();
         //     break;
-        case 1:
+        case 4:
             state_id_0();
             break;
         // case 5:
