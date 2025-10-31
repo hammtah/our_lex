@@ -1,12 +1,1 @@
-si
-id
-si
-id
-id
-id
-si
-id
-id
-si
-id
-id
+si	id	oprel	nb	alors	si	id	oprel	nb	alors	si	id	alors	si	id	oprel	id	alors	sinon	si	id	oprel	id	alors	sinon	si	id	oprel	nb	alors	sinon	si	id	oprel	nb	alors	si	id	alors	si	alors	si	id	nb	alors	si	id	nb	alors	si	id	id	alors	si	alors	si	alors	si	alors	si	alors	si	id	oprel	id	alors	

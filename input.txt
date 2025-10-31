@@ -1,1 +1,17 @@
-si HELLO si THERE IM USING si so that Si THEN somth 10.233E15
+si x < 10 alors si y >= 2 alors
+si z alors
+si A = B alors sinon si C <> D alors sinon
+si E <= 3.5E+2 alors sinon
+si T > 0.75 alors
+si n alors
+si 12. alors
+si x => 5 alors
+si x =< 5 alors
+si x >< y alors
+si .5 alors
+si 1E alors
+si 1E+ alors
+@
+-
+si 123e10 alors
+si x >= yyy alors

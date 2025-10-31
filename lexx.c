@@ -16,40 +16,40 @@ void success(int nb_automate) ;
 void success(int nb_automate) {
     switch (nb_automate) {
         case 0:
-            write_to_file("si\n");
-            printf("\nSI");
+            write_to_file("si\t");
+            printf("\tSI");
             start = 0;
             break;
         case 1:
-            write_to_file("alors\n");
-            printf("\nALORS");
+            write_to_file("alors\t");
+            printf("\tALORS");
             start = 0;
             break;
         case 2:
-            write_to_file("sinon\n");
-            printf("\nSINON");
+            write_to_file("sinon\t");
+            printf("\tSINON");
             start = 0;
             break;
         case 3:
-            write_to_file("oprel\n");
-            printf("\nOPREL");
+            write_to_file("oprel\t");
+            printf("\tOPREL");
             start = 0;
             break;
         case 4:
-            write_to_file("id\n");
-            printf("\nID");
+            write_to_file("id\t");
+            printf("\tID");
             start = 0;
             break;
         case 5:
-            write_to_file("nb\n");
-            printf("\nNB");
+            write_to_file("nb\t");
+            printf("\tNB");
             start = 0;
             break;
         default:
     }
 }
 void lexical_error() {
-    printf("Lexical error!\n");
+    printf("\nLexical error!\n");
     start = 0;
     // if (read_word_from_file())
     //     analyser();
