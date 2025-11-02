@@ -1,4 +1,4 @@
-s$i.8 <=10 alors si y >= 2 alors
+89.g <=10 alors si y >= 2 alors
 si z alors
 si A = B alors sinon si C <> D alors sinon
 si E <= 3.5E+2 alors sinon
@@ -15,3 +15,8 @@ si 1E+ alors
 -
 si 123e10 alors
 si x >= yyy alors
+
+je passe le caractere par tout les automates y inclut le si, sinon, etc
+si l'automate consomme des caracteres apres ce premier caractere mais n'arrive pas à l'état final(çad erreur) alors passer à l'automate suiant..., et si aucun automate n'arrive à l'état final alors ignorer juste le premier caractere
+si aucun automate ne reconnait le premier caractere alors l'ignorer et lexical_error()
+si l'automate consomme des caracteres apres ce premier caractere et arrive à un état final alors sauvegarder le mot reconnu et continuer jusqu'à trouver un mot reconnu plus long ou bien une erreur

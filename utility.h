@@ -13,6 +13,9 @@ char* temp;
 int start = 0;
 char d;
 
+typedef  enum {
+    SI, ALORS, SINON, OPREL, ID, NB
+}Tokens;
 // void empty_buffer() {
 //     for (int i = 0; word[i]!='\0'; word[i++] = '\0');
 // }
