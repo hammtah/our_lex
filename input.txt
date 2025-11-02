@@ -20,3 +20,4 @@ je passe le caractere par tout les automates y inclut le si, sinon, etc
 si l'automate consomme des caracteres apres ce premier caractere mais n'arrive pas à l'état final(çad erreur) alors passer à l'automate suiant..., et si aucun automate n'arrive à l'état final alors ignorer juste le premier caractere
 si aucun automate ne reconnait le premier caractere alors l'ignorer et lexical_error()
 si l'automate consomme des caracteres apres ce premier caractere et arrive à un état final alors sauvegarder le mot reconnu et continuer jusqu'à trouver un mot reconnu plus long ou bien une erreur
+on a utilisé le 'best match ' pour le nb token, çad on va essayer de prendre le plus long nombre possible par exemple 3. on va prendre le 3 puis aller analyser le point, si on ne fait pas cet approche alors le resu

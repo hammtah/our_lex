@@ -1,15 +1,24 @@
-//
-// Created by taha on 10/31/25.
-//
+/*
+ * State machine implementations for the lexical analyzer.
+ * Groups of functions below implement DFAs for keywords, identifiers,
+ * relational operators, and numeric literals. Includes small helper
+ * routines for buffering and input handling used by the DFAs.
+ *
+ * Created by taha on 10/31/25.
+ */
 #ifndef OUR_LEX_STATES_H
 #define OUR_LEX_STATES_H
 #include <iso646.h>
 
 #include "utility.h"
-void analyser() ;
-void lexical_error() ;
-void not_mine_error() ;
-void success(int nb_automate) ;
+
+/* External control and reporting hooks implemented in the driver. */
+void analyser();
+void lexical_error();
+void not_mine_error();
+void success(int nb_automate);
+
+/* Prototypes for state functions (DFAs). */
 void state_si_0();
 void state_si_1();
 void state_si_2();
@@ -45,177 +54,214 @@ void state_nb_4();
 void state_nb_5();
 void state_nb_6();
 
+/* Shared lexeme buffer used by the DFAs to accumulate characters. */
 char word[100];
+
+/* Reset the lexeme buffer to an empty string. */
 void clear_buffer() {
     for (int i = 0; i < 100; word[i++] = '\0');
 }
+
+/* Append a character to the end of the lexeme buffer. */
 void insert_buffer(char c) {
     int i = 0;
     while (word[i++] != '\0');
-    word[i-1] = c;
+    word[i - 1] = c;
 }
+
+/*
+ * Push the currently accumulated word back into the input stream
+ * (so other DFAs can try to recognize it) and clear the buffer.
+ */
 void unget_word() {
     int i = 0;
     while (word[i++] != '\0');
-    fseek(input, -(i-1), SEEK_CUR);
+    fseek(input, -(i - 1), SEEK_CUR);
     clear_buffer();
 }
+
+/*
+ * Read the next non-whitespace character from the given stream.
+ * Returns EOF if end-of-file is reached.
+ */
 char getfchar(FILE *f) {
     char c;
-    while (isspace(c=fgetc(f)));
+    while (isspace(c = fgetc(f)));
     return c;
 }
 
-/***************SI***************/
+/* ======================== DFA: SI (keyword) ======================== */
 void state_si_0() {
-    char c = getfchar(input);//We get the first character without spaces before it
+    /* Read the first non-space character of the lexeme. */
+    char c = getfchar(input);
     insert_buffer(c);
-    if (c=='s'||c=='S') {
+    if (c == 's' || c == 'S') {
         state_si_1();
-    }else {
+    } else {
         not_mine_error();
     }
 }
+
 void state_si_1() {
-    char c = fgetc(input);//We get the second character even if it's a space
+    /* Read the next character (may be whitespace if previously consumed). */
+    char c = fgetc(input);
     insert_buffer(c);
-    if (c=='i'||c=='I') {
+    if (c == 'i' || c == 'I') {
         state_si_2();
-    }else {
+    } else {
         not_mine_error();
     }
 }
+
 void state_si_2() {
-    char c = fgetc(input);//We get the second character even if it's a space
+    /* Look ahead to ensure the keyword is not followed by an alphanumeric. */
+    char c = fgetc(input);
     insert_buffer(c);
     if (!isalnum(c)) {
-        ungetc(c, input);//j'ai vu le caracter suivant qui n'appartient pas à l'automate donc je doit le rendre au buffer
-        word[strlen(word)-1] = '\0';
+        /* Character does not belong to this DFA: push back and accept 'si'. */
+        ungetc(c, input);
+        word[strlen(word) - 1] = '\0';
         success(SI);
-    }else {
+    } else {
         not_mine_error();
     }
 }
-    /***************SINON*******************/
+
+/* ====================== DFA: SINON (keyword) ======================= */
 void state_sinon_0() {
-    char c = getfchar(input);//We get the first character without spaces before it
+    char c = getfchar(input);
     insert_buffer(c);
-    if (c=='s'||c=='S') {
+    if (c == 's' || c == 'S') {
         state_sinon_1();
-    }else {
+    } else {
         not_mine_error();
     }
 }
+
 void state_sinon_1() {
-    char c = fgetc(input);//We get the second character even if it's a space
+    char c = fgetc(input);
     insert_buffer(c);
-    if (c=='i'||c=='I') {
+    if (c == 'i' || c == 'I') {
         state_sinon_2();
-    }else {
+    } else {
         not_mine_error();
     }
 }
+
 void state_sinon_2() {
-    char c = fgetc(input);//We get the second character even if it's a space
+    char c = fgetc(input);
     insert_buffer(c);
-    if (c=='n'||c=='N') {
+    if (c == 'n' || c == 'N') {
         state_sinon_3();
-    }else {
+    } else {
         not_mine_error();
     }
 }
+
 void state_sinon_3() {
-    char c = fgetc(input);//We get the second character even if it's a space
+    char c = fgetc(input);
     insert_buffer(c);
-    if (c=='o'||c=='O') {
+    if (c == 'o' || c == 'O') {
         state_sinon_4();
-    }else {
+    } else {
         not_mine_error();
     }
 }
+
 void state_sinon_4() {
-    char c = fgetc(input);//We get the second character even if it's a space
+    char c = fgetc(input);
     insert_buffer(c);
-    if (c=='n'||c=='N') {
+    if (c == 'n' || c == 'N') {
         state_sinon_5();
-    }else {
+    } else {
         not_mine_error();
     }
 }
 
 void state_sinon_5() {
-    char c = fgetc(input);//We get the second character even if it's a space
+    /* Look ahead to ensure the keyword is not followed by an alphanumeric. */
+    char c = fgetc(input);
     insert_buffer(c);
     if (!isalnum(c)) {
-        ungetc(c, input);//j'ai vu le caracter suivant qui n'appartient pas à l'automate donc je doit le rendre au buffer
-        word[strlen(word)-1] = '\0';
+        /* Character does not belong to this DFA: push back and accept 'sinon'. */
+        ungetc(c, input);
+        word[strlen(word) - 1] = '\0';
         success(SINON);
-    }else {
+    } else {
         not_mine_error();
     }
 }
-/***************ALORS*******************/
+
+/* ====================== DFA: ALORS (keyword) ======================= */
 void state_alors_0() {
-    char c = getfchar(input);//We get the first character without spaces before it
+    char c = getfchar(input);
     insert_buffer(c);
-    if (c=='a'||c=='A') {
+    if (c == 'a' || c == 'A') {
         state_alors_1();
-    }else {
+    } else {
         not_mine_error();
     }
 }
+
 void state_alors_1() {
-    char c = fgetc(input);//We get the second character even if it's a space
+    char c = fgetc(input);
     insert_buffer(c);
-    if (c=='l'||c=='L') {
+    if (c == 'l' || c == 'L') {
         state_alors_2();
-    }else {
+    } else {
         not_mine_error();
     }
 }
+
 void state_alors_2() {
-    char c = fgetc(input);//We get the second character even if it's a space
+    char c = fgetc(input);
     insert_buffer(c);
-    if (c=='o'||c=='O') {
+    if (c == 'o' || c == 'O') {
         state_alors_3();
-    }else {
+    } else {
         not_mine_error();
     }
 }
+
 void state_alors_3() {
-    char c = fgetc(input);//We get the second character even if it's a space
+    char c = fgetc(input);
     insert_buffer(c);
-    if (c=='r'||c=='R') {
+    if (c == 'r' || c == 'R') {
         state_alors_4();
-    }else {
+    } else {
         not_mine_error();
     }
 }
+
 void state_alors_4() {
-    char c = fgetc(input);//We get the second character even if it's a space
+    char c = fgetc(input);
     insert_buffer(c);
-    if (c=='s'||c=='S') {
+    if (c == 's' || c == 'S') {
         state_alors_5();
-    }else {
+    } else {
         not_mine_error();
     }
 }
 
 void state_alors_5() {
-    char c = fgetc(input);//We get the second character even if it's a space
+    /* Look ahead to ensure the keyword is not followed by an alphanumeric. */
+    char c = fgetc(input);
     insert_buffer(c);
     if (!isalnum(c)) {
-        ungetc(c, input);//j'ai vu le caracter suivant qui n'appartient pas à l'automate donc je doit le rendre au buffer
-        word[strlen(word)-1] = '\0';
+        /* Character does not belong to this DFA: push back and accept 'alors'. */
+        ungetc(c, input);
+        word[strlen(word) - 1] = '\0';
         success(ALORS);
-    }else {
+    } else {
         not_mine_error();
     }
 }
-/*************id****************/
-// id: letter (letter|number)*
+
+/* =================== DFA: Identifier (ID) =========================
+ * Grammar: letter (letter | digit)*
+ */
 void state_id_0() {
-    char c = getfchar(input);//We get the first character without spaces before it
+    char c = getfchar(input); /* First non-space character of a potential identifier. */
     insert_buffer(c);
     if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
         state_id_1();
@@ -223,20 +269,22 @@ void state_id_0() {
         not_mine_error();
     }
 }
+
 void state_id_1() {
-    char c = fgetc(input);//We get the second character even if it's a space
+    /* Continue consuming letters and digits; stop on first non-[A-Za-z0-9]. */
+    char c = fgetc(input);
     insert_buffer(c);
     if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')) {
         state_id_1();
     } else {
-        ungetc(c, input);//j'ai vu le caracter suivant qui n'appartient pas à l'automate donc je doit le rendre au buffer
-        word[strlen(word)-1] = '\0';
+        /* Non-identifier character encountered: push back and accept ID. */
+        ungetc(c, input);
+        word[strlen(word) - 1] = '\0';
         success(ID);
     }
 }
 
-
-/************OPREL (< | <= | = | <> | > | >=) DFAM*************/
+/* ========= DFA: Relational operator (< | <= | = | <> | > | >=) ======== */
 void state_oprel_0() {
     char c = getfchar(input);
     insert_buffer(c);
@@ -254,67 +302,80 @@ void state_oprel_0() {
             not_mine_error();
     }
 }
-// After reading '<': accept '<' alone, or consume '='/'>' for '<=' / '<>'
+
+/* After reading '<': accept '<' alone, or consume '='/'>' for '<=' / '<>' */
 void state_oprel_1() {
-    // char c = getfchar(input);
     char c = fgetc(input);
     insert_buffer(c);
     switch (c) {
-        case '=': // '<='
-        case '>': // '<>'
+        case '=': /* '<=' */
+        case '>': /* '<>' */
             state_oprel_4();
             break;
         default:
+            /* Next character does not belong: push back and accept '<'. */
             ungetc(c, input);
             success(OPREL);
     }
 }
-// After reading '>': accept '>' alone, or consume '=' for '>='
+
+/* After reading '>': accept '>' alone, or consume '=' for '>=' */
 void state_oprel_2() {
     char c = fgetc(input);
     insert_buffer(c);
     switch (c) {
-        case '=': // '>='
+        case '=': /* '>=' */
             state_oprel_4();
             break;
         default:
+            /* Next character does not belong: push back and accept '>'. */
             ungetc(c, input);
             success(OPREL);
     }
 }
-// '=' is a complete operator by itself
+
+/* '=' is a complete operator by itself */
 void state_oprel_3() {
-        success(OPREL);
-}
-// Final acceptor for two-character operators: '<=', '<>', '>='
-void state_oprel_4() {
-        success(OPREL);
+    success(OPREL);
 }
 
-/************NB (chiffre+(.chiffre+)?(E(+|-)?chiffre+)?) DFAM*************/
+/* Final acceptor for two-character operators: '<=', '<>', '>=' */
+void state_oprel_4() {
+    success(OPREL);
+}
+
+/* ========== DFA: Number (digits+(.digits+)?(E(+|-)?digits+)?) ==========
+ * Recognizes integers, decimals, and scientific notation. Uses a best-match
+ * buffer to backtrack cleanly when a partial numeric literal is valid.
+ */
 char best_match[100];
+
+/* Keep the longest valid numeric prefix seen so far (excluding the latest lookahead). */
 void insert_best_match() {
-    if ((strlen(word)-1) > strlen(best_match)) {
-        strncpy(best_match, word, strlen(word)-1);
+    if ((strlen(word) - 1) > strlen(best_match)) {
+        strncpy(best_match, word, strlen(word) - 1);
     }
 }
+
 void state_nb_0() {
-    for (int i = 0; i < 100; best_match[i++] = '\0');//initialise the best match string
+    /* Initialize best_match for this token attempt. */
+    for (int i = 0; i < 100; best_match[i++] = '\0');
     char c = getfchar(input);
     insert_buffer(c);
     if (c >= '0' && c <= '9') {
         state_nb_1();
     } else {
         not_mine_error();
-
     }
 }
-// // Integer part acceptor: digits+, optional '.' or 'E', or end
+
+/* Integer part acceptor: digits+, optional '.' or 'E', or end */
 void state_nb_1() {
     char c = fgetc(input);
     insert_buffer(c);
     if (c >= '0' && c <= '9') {
-        insert_best_match();   //store the shortest word that matches the nb automata(!don't forget that the buffer(word) contains also the next caractere so we should ungetit)
+        /* Store the longest valid numeric prefix so far. */
+        insert_best_match();
         state_nb_1();
     } else if (c == '.') {
         insert_best_match();
@@ -323,28 +384,30 @@ void state_nb_1() {
         insert_best_match();
         state_nb_3();
     } else {
+        /* No further numeric content: push back and accept integer. */
         ungetc(c, input);
-        // insert_best_match();
         success(NB);
     }
 }
-// // After '.', require at least one digit
+
+/* After '.', require at least one digit */
 void state_nb_2() {
     char c = fgetc(input);
     insert_buffer(c);
     if (c >= '0' && c <= '9') {
         state_nb_4();
     } else {
-        if (strlen(best_match)>0) {
-            //Return the pointer to the last recognised number
-            fseek(input, -(strlen(word)-strlen(best_match)), SEEK_CUR);
+        if (strlen(best_match) > 0) {
+            /* Backtrack to the last recognized number and accept it. */
+            fseek(input, -(strlen(word) - strlen(best_match)), SEEK_CUR);
             success(NB);
-        }
-        else
+        } else {
             not_mine_error();
+        }
     }
 }
-// // Fractional part acceptor: digits+, optional 'E', or end
+
+/* Fractional part acceptor: digits+, optional 'E', or end */
 void state_nb_4() {
     char c = fgetc(input);
     insert_buffer(c);
@@ -352,58 +415,61 @@ void state_nb_4() {
         state_nb_4();
     } else if (c == 'E') {
         state_nb_3();
-    }else {
+    } else {
+        /* No more fractional content: push back and accept decimal. */
         ungetc(c, input);
-       success(NB);
+        success(NB);
     }
 }
-// After 'E': optional sign or require at least one digit
+
+/* After 'E': optional sign or require at least one digit */
 void state_nb_3() {
     char c = fgetc(input);
     insert_buffer(c);
     if (c == '+' || c == '-') {
-        // require at least one digit next
+        /* Require at least one digit after the sign. */
         state_nb_6();
     } else if (c >= '0' && c <= '9') {
         state_nb_5();
     } else {
-        if (strlen(best_match)>0) {
-            //Return the pointer to the last recognised number
-            fseek(input, -(strlen(word)-strlen(best_match)), SEEK_CUR);
+        if (strlen(best_match) > 0) {
+            /* Backtrack to the last recognized number and accept it. */
+            fseek(input, -(strlen(word) - strlen(best_match)), SEEK_CUR);
             success(NB);
-        }
-        else
+        } else {
             not_mine_error();
-
+        }
     }
 }
-// // After sign: require first exponent digit
+
+/* After sign: require first exponent digit */
 void state_nb_6() {
     char c = fgetc(input);
     insert_buffer(c);
     if (c >= '0' && c <= '9') {
         state_nb_5();
     } else {
-        if (strlen(best_match)>0) {
-            //Return the pointer to the last recognised number
-            fseek(input, -(strlen(word)-strlen(best_match)), SEEK_CUR);
+        if (strlen(best_match) > 0) {
+            /* Backtrack to the last recognized number and accept it. */
+            fseek(input, -(strlen(word) - strlen(best_match)), SEEK_CUR);
             success(NB);
-        }
-        else
+        } else {
             not_mine_error();
+        }
     }
 }
-// Exponent digits acceptor: digits+, then end
+
+/* Exponent digits acceptor: digits+, then end */
 void state_nb_5() {
     char c = fgetc(input);
     insert_buffer(c);
     if (c >= '0' && c <= '9') {
         state_nb_5();
-    }
-    else {
+    } else {
+        /* No more exponent digits: push back and accept scientific literal. */
         ungetc(c, input);
         success(NB);
     }
 }
-//
-#endif //OUR_LEX_STATES_H
+
+#endif // OUR_LEX_STATES_H
