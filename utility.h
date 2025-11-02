@@ -11,6 +11,7 @@ FILE *input = NULL, *output = NULL;
 char word[100];
 char* temp;
 int start = 0;
+char d;
 
 // void empty_buffer() {
 //     for (int i = 0; word[i]!='\0'; word[i++] = '\0');
