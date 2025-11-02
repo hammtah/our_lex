@@ -1,4 +1,4 @@
-89.g <=10 alors si y >= 2 alors
+sinon 89.g <=10 alors si y >= 2 alors
 si z alors
 si A = B alors sinon si C <> D alors sinon
 si E <= 3.5E+2 alors sinon

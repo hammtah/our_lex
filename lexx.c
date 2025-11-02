@@ -12,21 +12,7 @@ void analyser() ;
 void lexical_error() ;
 void not_mine_error() ;
 void success(int nb_automate) ;
-// void check_reserved() {
-//     if (!strcmp(word, "si")) {
-//         write_to_file("SI\t");
-//         printf("\tSI");
-//     }else if (!strcmp(word, "sinon")) {
-//         write_to_file("SINON\t");
-//         printf("\tSINON");
-//     }else if (!strcmp(word, "alors")) {
-//         write_to_file("ALORS\t");
-//         printf("\tALORS");
-//     }else {
-//         write_to_file("id\t");
-//         printf("\tID");
-//     }
-// }
+
 void success(int nb_automate) {
     switch (nb_automate) {
         case OPREL:
@@ -65,29 +51,15 @@ void success(int nb_automate) {
 }
 void lexical_error() {
     printf("\nLexical error!\n");
-    // start = 0;
+    start = 0;
     clear_buffer();
-    // fgetc(input);//consume the character that has not been recognized so that we can move to the next one(the reality, we should consume the shortest not recognised word by the automatas)
-    //move the file input ptr to the next string
-
-    // if (read_word_from_file())
-    //     analyser();
+    fgetc(input);//consume the character that has not been recognized so that we can move to the next one(the reality, we should consume the shortest not recognised word by the automatas)
 }
 void not_mine_error() {
     unget_word();//unget the word that have been read by the automata to be analysed by another automata
     start++;
     analyser();
 }
-// void analyser() {
-//         // ungetc(d, input);//Should be removed and we should not enter to state0 because we already read the first character so we should go to state1 or 2 ..
-//         if ((d=='<')||(d=='>')||(d=='='))
-//             state_oprel_0();
-//         else if ((d >= 'A' && d <= 'Z') || (d >= 'a' && d <= 'z'))
-//             state_id_0();
-//         else if (d >= '0' && d <= '9')
-//             state_nb_0();
-//         else lexical_error();
-// }
 void analyser() {
     switch (start) {
         case 0:
@@ -116,12 +88,9 @@ int main() {
     input = fopen(input_file, "r");
     output = fopen(output_file, "w");
 
-    // while (read_word_from_file())
-    // printf("%s", word);
-
-    // while (read_word_from_file())
-    while ((getfchar(input))!=EOF) {
-        // ungetc(c, input);
+    char c;
+    while ((c=getfchar(input))!=EOF) {
+        ungetc(c, input);
         analyser();
     }
     fclose(input);
