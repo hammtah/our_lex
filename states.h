@@ -43,8 +43,8 @@ void state_id_1();
 void state_oprel_0();
 void state_oprel_1();
 void state_oprel_2();
-void state_oprel_3();
-void state_oprel_4();
+// void state_oprel_3();
+// void state_oprel_4();
 
 void state_nb_0();
 void state_nb_1();
@@ -56,10 +56,16 @@ void state_nb_6();
 
 /* Shared lexeme buffer used by the DFAs to accumulate characters. */
 char word[100];
+/* Shared error_word buffer used to print the word when we have lexical error. */
+char error_word[100];
 
 /* Reset the lexeme buffer to an empty string. */
 void clear_buffer() {
     for (int i = 0; i < 100; word[i++] = '\0');
+}
+/* Reset the error word buffer to an empty string. */
+void clear_error_word() {
+    for (int i = 0; i < 100; error_word[i++] = '\0');
 }
 
 /* Append a character to the end of the lexeme buffer. */
@@ -86,7 +92,10 @@ void unget_word() {
  */
 char getfchar(FILE *f) {
     char c;
-    while (isspace(c = fgetc(f)));
+    while (isspace(c = fgetc(f))) {
+        if (c == '\n')
+            line_num++;
+    }
     return c;
 }
 

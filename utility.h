@@ -19,7 +19,7 @@ char word[100];
 char* temp;
 int start = 0;
 char d;
-
+int line_num = 1;
 /* Token kinds recognized by the analyzer. */
 typedef enum {
     SI,      /* 'si' keyword */

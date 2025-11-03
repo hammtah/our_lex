@@ -28,32 +28,32 @@ void success(int nb_automate) {
     switch (nb_automate) {
         case OPREL:
             write_to_file("oprel\t");
-            printf("\tOPREL");
+            // printf("\tOPREL");
             start = 0;
             break;
         case ID:
             write_to_file("id\t");
-            printf("\tID");
+            // printf("\tID");
             start = 0;
             break;
         case NB:
             write_to_file("nb\t");
-            printf("\tNB");
+            // printf("\tNB");
             start = 0;
             break;
         case SI:
             write_to_file("si\t");
-            printf("\tSI");
+            // printf("\tSI");
             start = 0;
             break;
         case ALORS:
             write_to_file("alors\t");
-            printf("\tALORS");
+            // printf("\tALORS");
             start = 0;
             break;
         case SINON:
             write_to_file("sinon\t");
-            printf("\tSINON");
+            // printf("\tSINON");
             start = 0;
             break;
         default:
@@ -70,7 +70,7 @@ void success(int nb_automate) {
  * character so the analysis can progress.
  */
 void lexical_error() {
-    printf("\nLexical error!\n");
+    printf("\nLexical error on line %d in '%s'", line_num, error_word);
     start = 0;
     clear_buffer();
     /* Consume the unrecognized character to move past the error. */
@@ -83,6 +83,10 @@ void lexical_error() {
  * Restores the word read so far, advances to the next DFA, and retries analysis.
  */
 void not_mine_error() {
+    //if we have passed through all automaton and no one verify the word then store the word to print it in lexical_error()
+    if (start == 5) {
+        strcpy(error_word, word);
+    }
     /* Return the word to the input so another DFA can attempt to consume it. */
     unget_word();
     start++;
@@ -118,6 +122,8 @@ void analyser() {
         default:
             lexical_error();
     }
+    clear_error_word();
+
 }
 
 /*

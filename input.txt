@@ -1,3 +1,4 @@
+.
 si 123E10 alors
 sinon 89.3Eg <=10 alors si y >= 2 alors
 si z alors
