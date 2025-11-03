@@ -296,7 +296,8 @@ void state_oprel_0() {
             state_oprel_2();
             break;
         case '=':
-            state_oprel_3();
+            // state_oprel_3();
+            success(OPREL);
             break;
         default:
             not_mine_error();
@@ -310,7 +311,8 @@ void state_oprel_1() {
     switch (c) {
         case '=': /* '<=' */
         case '>': /* '<>' */
-            state_oprel_4();
+            // state_oprel_4();
+            success(OPREL);
             break;
         default:
             /* Next character does not belong: push back and accept '<'. */
@@ -325,7 +327,8 @@ void state_oprel_2() {
     insert_buffer(c);
     switch (c) {
         case '=': /* '>=' */
-            state_oprel_4();
+            // state_oprel_4();
+            success(OPREL);
             break;
         default:
             /* Next character does not belong: push back and accept '>'. */
@@ -335,14 +338,14 @@ void state_oprel_2() {
 }
 
 /* '=' is a complete operator by itself */
-void state_oprel_3() {
-    success(OPREL);
-}
+// void state_oprel_3() {
+//     success(OPREL);
+// }
 
 /* Final acceptor for two-character operators: '<=', '<>', '>=' */
-void state_oprel_4() {
-    success(OPREL);
-}
+// void state_oprel_4() {
+//     success(OPREL);
+// }
 
 /* ========== DFA: Number (digits+(.digits+)?(E(+|-)?digits+)?) ==========
  * Recognizes integers, decimals, and scientific notation. Uses a best-match
